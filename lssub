@@ -2,5 +2,5 @@
 
 dirlist=`find . -name "$1" -type d -exec realpath {} \;`
 if [ "$dirlist" != "" ]; then
-  find `find . -name "$1" -type d -exec realpath {} \;` -type f
+  find $dirlist -type f
 fi
