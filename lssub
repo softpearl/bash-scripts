@@ -11,7 +11,9 @@ if [ $# -eq 0 ]; then
 fi
 
 # get the length of the current working dir to trim it from the realpath
-pwd=`pwd`
+# The -P is to make sure the path is the physical path, so that it match the realpath called in find -exec later
+pwd=`pwd -P`
+# echo "pwd: $pwd"
 len=${#pwd}
 
 # cut -cN, N start index is 1, so need len = len + 2
@@ -19,9 +21,12 @@ len=${#pwd}
 
 # trim the last / in the directory
 dirpat=`echo $1 | cut -d'/' -f 1`
+#echo "dirpat: $dirpat"
 
 # get the list of the matching directory with full path, and pipe into cut to trim the prefix of pwd
 dirlist=`find . -name "$dirpat" -type d -exec realpath {} \; | cut -c$len-`
+# echo "dirlist: $dirlist"
+
 
 # then list the file
 if [ "$dirlist" != "" ]; then

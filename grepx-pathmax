@@ -11,22 +11,7 @@ if [ $# -lt 2 ]; then
   exit
 fi
 
-# get the length of the current working dir to trim it from the realpath
-# The -P is to make sure the path is the physical path, so that it match the realpath called in find -exec later
-pwd=`pwd -P`
-# echo "pwd: $pwd"
-len=${#pwd}
-
-# cut -cN, N start index is 1, so need len = len + 2
-((len+=2))
-
-# trim the last / in the directory
-dirpat=`echo $2 | cut -d'/' -f 1`
-#echo "dirpat: $dirpat"
-
-
-dirlist=`find . -name "$dirpat" -type d -exec realpath {} \; | cut -c$len- | xargs`
-# echo "dirlist: $dirlist"
+dirlist=`find . -name "$2" -type d -exec realpath {} \; | xargs`
 
 if [ "$dirlist" != "" ]; then
   if [ "$3" != "" ]; then
