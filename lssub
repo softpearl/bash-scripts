@@ -1,0 +1,6 @@
+# list all files under a subdirectory passed in as an argument
+
+dirlist=`find . -name "$1" -type d -exec realpath {} \;`
+if [ "$dirlist" != "" ]; then
+  find `find . -name "$1" -type d -exec realpath {} \;` -type f
+fi
