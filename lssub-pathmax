@@ -2,7 +2,7 @@
 # This does the same as lssub but the path is full, no cut
 #
 # Revision
-#  11-13-2018  New - find match in files found under a subdirectory
+#  11-13-2018 lnt New - find match in files found under a subdirectory
 # 
 # list all files under a subdirectory passed in as an argument
 # show full path name

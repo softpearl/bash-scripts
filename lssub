@@ -1,6 +1,6 @@
 #------------------------------------------------------------------------------
 # Revision
-#  11-13-2018  New - find match in files found under a subdirectory
+#  11-13-2018 lnt New - find match in files found under a subdirectory
 # 
 # list all files under a subdirectory passed in as an argument
 # Ex lssub first '*bb'

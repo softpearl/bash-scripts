@@ -1,6 +1,6 @@
 #
 # Revision
-#  11-13-2018  New - find match in files found under a subdirectory
+#  11-13-2018 lnt New - find match in files found under a subdirectory
 # 
 # Ex: Find all matches with pattern "r" in all files found under a subdirectory "first" with filename end with 'bb'
 #  grepx r first *bb
