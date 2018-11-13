@@ -1,0 +1,22 @@
+#
+# Revision
+#  11-13-2018  New - find match in files found under a subdirectory
+# 
+# Ex: Find all matches with pattern "r" in all files found under a subdirectory "first" with filename end with 'bb'
+#  grepx r first *bb
+# 
+
+if [ $# -lt 2 ]; then
+  echo "Usage: grepx <pattern> <subdir> <file>"
+  exit
+fi
+
+dirlist=`find . -name "$2" -type d -exec realpath {} \; | xargs`
+
+if [ "$dirlist" != "" ]; then
+  if [ "$3" != "" ]; then
+    grep --color=always $1 `find $dirlist -type f -name "$3"` /dev/null
+  else
+    grep --color=always $1 `find $dirlist -type f` /dev/null
+  fi
+fi

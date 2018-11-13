@@ -1,12 +1,15 @@
 #------------------------------------------------------------------------------
+# This does the same as lssub but the path is full, no cut
+#
 # Revision
 #  11-13-2018  New - find match in files found under a subdirectory
 # 
 # list all files under a subdirectory passed in as an argument
-# Ex lssub first '*bb'
+# show full path name
+# lssub-pathmax first
 
 if [ $# -eq 0 ]; then
-  echo "Usage: lssub <subdir> <file>"
+  echo "Usage: lssub-pathmax <subdir> <file>"
   exit
 fi
 
@@ -21,7 +24,7 @@ len=${#pwd}
 dirpat=`echo $1 | cut -d'/' -f 1`
 
 # get the list of the matching directory with full path, and pipe into cut to trim the prefix of pwd
-dirlist=`find . -name "$dirpat" -type d -exec realpath {} \; | cut -c$len-`
+dirlist=`find . -name "$dirpat" -type d -exec realpath {} \;`
 
 # then list the file
 if [ "$dirlist" != "" ]; then
