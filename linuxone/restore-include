@@ -1,0 +1,79 @@
+#
+# File: restore_include
+# Descr: For compiling Linux kernel version 1.0 there are three links need to setup in /usr/include.
+#   This script help to make the job faster
+#
+# Revision
+#   1-22-19  New
+#
+
+LINK_ASM=include/asm
+LINK_LINUX=include/linux
+LINK_NETINET=include/netinet
+
+SAVE_SUFFIX=_orig
+
+# function
+make_link() {
+    target_dir_each=`basename $1`/$2
+    echo "- Cleanup link for: $target_dir_each"
+    
+    if [ -d $target_dir_each ]; then
+
+        abs_link_target=`readlink -f $target_dir_each`
+        link_name=/usr/$2
+        flag_restore=0
+        echo "- Check link name: $link_name"
+        if [ -h $link_name ]; then
+            existing_link=`readlink $link_name`
+            echo "-- Found a link, $link_name -> $existing_link"
+            echo "--- Check the existing link with: $abs_link_target"
+            if [ $existing_link == $abs_link_target ]; then
+                echo "---- Link exist, remove it"
+                sudo rm -f $link_name
+                flag_restore=1
+            fi
+        else
+            echo "-- Link '$link_name' is not found"
+        fi
+
+        # now restore the dir
+        if [ $flag_restore -eq 1 ]; then
+            orig_dir_name="${link_name}$SAVE_SUFFIX"
+            if [ -d $orig_dir_name ]; then
+                echo "-- Restore existing dir $orig_dir_name to $link_name"
+                sudo mv $orig_dir_name $link_name
+            fi
+        fi
+
+    else
+        echo "-- Target dir not exist: $target_dir_each"
+        return 1
+    fi
+    return 0
+}
+
+
+# program start
+if [ "$1" == "" ]; then
+    echo "Usage: $0 <dir>"
+    exit
+fi
+
+
+target_dir=$1
+if [ -d $1 ]; then
+    echo "Found target directory: $1"
+
+    target_inc_dir="`basename $target_dir`/include"
+    if [ -d $target_inc_dir ]; then
+        echo "- Found include dir: $target_inc_dir"
+        # check 
+        make_link $1 $LINK_ASM
+        make_link $1 $LINK_LINUX
+        make_link $1 $LINK_NETINET
+    fi
+
+else
+    echo "Directory $1: not found"
+fi

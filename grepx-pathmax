@@ -19,4 +19,6 @@ if [ "$dirlist" != "" ]; then
   else
     grep --color=always $1 `find $dirlist -type f` /dev/null
   fi
+else
+  echo "Nothing is found under $dirpat"
 fi

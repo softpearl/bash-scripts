@@ -7,7 +7,7 @@
 # 
 
 if [ $# -lt 2 ]; then
-  echo "Usage: grepx <pattern> <subdir> <file>"
+  echo "Usage: grepx <pattern> <subdir> [<file>]"
   exit
 fi
 
@@ -21,7 +21,7 @@ len=${#pwd}
 ((len+=2))
 
 # trim the last / in the directory
-dirpat=`echo $2 | cut -d'/' -f 1`
+dirpat=`echo "$2" | cut -d'/' -f 1`
 #echo "dirpat: $dirpat"
 
 
@@ -34,4 +34,6 @@ if [ "$dirlist" != "" ]; then
   else
     grep --color=always $1 `find $dirlist -type f` /dev/null
   fi
+else
+  echo "Nothing is found under $dirpat"
 fi

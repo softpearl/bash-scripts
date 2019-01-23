@@ -1,16 +1,13 @@
+#
+# Descr: List recipes of yocto project
+#
+# find . -type d -name 'recipes-*' -exec find {} -maxdepth 1 -mindepth 1 -type d -printf '%-30f%p\n' \; | sort
 #------------------------------------------------------------------------------
 # Revision
 #  11-13-2018 lnt New - find match in files found under a subdirectory
 # 
 # list all files under a subdirectory passed in as an argument
 # Ex lssub first '*bb'
-
-if [ $# -eq 0 ]; then
-  echo "Usage: lssub <subdir> [<file>]"
-  echo " Ex: lssub 'first*' log*"
-  echo " Note that subdir wildcard sometimes should be quoted"
-  exit
-fi
 
 # get the length of the current working dir to trim it from the realpath
 # The -P is to make sure the path is the physical path, so that it match the realpath called in find -exec later
@@ -23,7 +20,7 @@ len=${#pwd}
 
 # trim the last / in the directory
 # echo "\$1: $1"
-dirpat=`echo "$1" | cut -d'/' -f 1`
+dirpat='recipes-*'
 # echo "dirpat: $dirpat"
 
 # get the list of the matching directory with full path, and pipe into cut to trim the prefix of pwd
@@ -33,11 +30,11 @@ dirlist=`find . -name "$dirpat" -type d -exec realpath {} \; | cut -c$len-`
 
 # then list the file
 if [ "$dirlist" != "" ]; then
-  if [ "$2" != "" ]; then
-    find $dirlist -type f -name "$2"
+  if [ "$1" != "" ]; then
+    find $dirlist -type f -name "$1*bb"
   else
-    find $dirlist -type f
+    find $dirlist -type f -name "*bb"
   fi
 else
-  echo "Nothing is found under $dirpat"
+  echo "No recipes is found under $dirpat"
 fi

@@ -1,0 +1,10 @@
+#
+# File: fix-macro-name
+# Descr: For compiling Linux kernel version 1.0 this will clean up the ifdef macros
+#   This script help to make the job faster
+#
+# Revision
+#   1-22-19  New
+#
+
+grep -r -l "ifdef 0" * | xargs sed -i 's/ifdef 0/if 0/g'

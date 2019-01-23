@@ -10,6 +10,8 @@
 
 if [ $# -eq 0 ]; then
   echo "Usage: lssub-pathmax <subdir> <file>"
+  echo " Ex: lssub 'first*' log*"
+  echo " Note that subdir wildcard sometimes should be quoted"
   exit
 fi
 
@@ -21,7 +23,7 @@ len=${#pwd}
 ((len+=2))
 
 # trim the last / in the directory
-dirpat=`echo $1 | cut -d'/' -f 1`
+dirpat=`echo "$1" | cut -d'/' -f 1`
 
 # get the list of the matching directory with full path, and pipe into cut to trim the prefix of pwd
 dirlist=`find . -name "$dirpat" -type d -exec realpath {} \;`
@@ -33,4 +35,6 @@ if [ "$dirlist" != "" ]; then
   else
     find $dirlist -type f
   fi
+else
+  echo "Nothing is found under $dirpat"
 fi

@@ -1,0 +1,9 @@
+# dump content of a script file without comment or empty line
+if [ "$1" == "" ]; then
+    echo "usage: catco <file>"
+    exit
+fi
+
+awk '
+!/^#/ && !/^$/ { print $0 }
+' $1

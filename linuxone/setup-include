@@ -1,0 +1,86 @@
+#
+# File: setup_include
+# Descr: For compiling Linux kernel version 1.0 there are three links need to setup in /usr/include.
+#   This script help to make the job faster
+#
+# Revision
+#   1-22-19  New
+#
+
+LINK_ASM=include/asm
+LINK_LINUX=include/linux
+LINK_NETINET=include/netinet
+
+SAVE_SUFFIX=_orig
+
+# function
+make_link() {
+    target_dir_each=`basename $1`/$2
+    echo "- Make link for: $target_dir_each"
+    
+    if [ -d $target_dir_each ]; then
+
+        abs_link_target=`readlink -f $target_dir_each`
+        link_name=/usr/$2
+        flag_create=1
+        echo "- Check link name: $link_name"
+        if [ -h $link_name ]; then
+            existing_link=`readlink $link_name`
+            echo "-- Found a link, $link_name -> $existing_link"
+            echo "--- Check the existing link with: $abs_link_target"
+            if [ $existing_link == $abs_link_target ]; then
+                echo "---- Link exist, no need to create"
+                flag_create=0
+            else
+                # create new name using random minute and second number
+                new_name="${link_name}`date +%M%S`"
+                echo "---- Rename the link with new name: $new_name"
+                sudo mv $link_name $new_name
+            fi
+           
+        else
+            # save the existing dir
+            echo "--- Check dir name: $link_name"
+            if [ -d $link_name ]; then
+                orig_dir_name="${link_name}$SAVE_SUFFIX"
+                echo "---- Save existing dir to $orig_dir_name"
+                sudo mv $link_name $orig_dir_name
+            fi
+            # create a link
+        fi
+
+        if [ $flag_create -eq 1 ]; then
+            echo "--- Create link for $abs_link_target"
+            sudo ln -s $abs_link_target $link_name
+        fi
+    else
+        echo "-- Target dir not exist: $target_dir_each"
+        return 1
+    fi
+    return 0
+}
+
+
+# program start
+if [ "$1" == "" ]; then
+    echo "Usage: $0 <dir>"
+    exit
+fi
+
+
+target_dir=$1
+if [ -d $1 ]; then
+    echo "Found target directory: $1"
+
+    target_inc_dir="`basename $target_dir`/include"
+    if [ -d $target_inc_dir ]; then
+        echo "- Found include dir: $target_inc_dir"
+        # check 
+        make_link $1 $LINK_ASM
+        make_link $1 $LINK_LINUX
+        make_link $1 $LINK_NETINET
+    fi
+
+else
+    echo "Directory $1: not found"
+fi
